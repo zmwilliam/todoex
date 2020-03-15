@@ -42,6 +42,8 @@ defmodule TodexWeb do
       import TodexWeb.ErrorHelpers
       import TodexWeb.Gettext
       alias TodexWeb.Router.Helpers, as: Routes
+
+      import TodexWeb.Helpers.Auth, only: [signed_in?: 1]
     end
   end
 

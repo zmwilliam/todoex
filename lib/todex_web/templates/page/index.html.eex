@@ -1,3 +1,9 @@
-<section class="row">
-  <%= link "Sign Up", to: Routes.user_path(@conn, :new) %>
+<section>
+  <%= if signed_in?(@conn) do %>
+    <%= link "Sign Out", to: Routes.session_path(@conn, :delete), method: :delete %>
+  <% else %>
+    <%= link "Sign In", to: Routes.session_path(@conn, :new) %>
+    </br>
+    <%= link "Sign Up", to: Routes.user_path(@conn, :new) %>
+  <% end %>
 </section>
