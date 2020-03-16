@@ -19,4 +19,5 @@ defmodule Todex.Accounts.User do
     |> unique_constraint(:username)
     |> update_change(:encrypted_password, &Bcrypt.hashpwsalt/1)
   end
+
 end
