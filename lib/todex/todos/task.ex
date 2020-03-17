@@ -17,7 +17,7 @@ defmodule Todex.Todos.Task do
   @doc false
   def changeset(task, attrs) do
     task
-    |> cast(attrs, [:title, :description, :conclusion_date, :is_concluded, :user_id])
+    |> cast(attrs, [:title, :description, :conclusion_date, :is_concluded, :category, :user_id])
     |> validate_required([:title])
   end
 end

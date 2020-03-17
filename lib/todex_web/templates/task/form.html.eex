@@ -13,6 +13,10 @@
   <%= textarea f, :description %>
   <%= error_tag f, :description %>
 
+  <%= label f, :category, for: "categoryField" %>
+  <%= select f, :category, Enum.map(@categories, &{&1.name, &1.id}), id: "categoryField" %>
+  <%= error_tag f, :category %>
+
   <div>
     <%= submit "Save" %>
   </div>

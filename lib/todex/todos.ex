@@ -6,7 +6,7 @@ defmodule Todex.Todos do
   import Ecto.Query, warn: false
   alias Todex.Repo
 
-  alias Todex.Todos.Project
+  alias Todex.Todos.{Project, Category}
 
   @doc """
   Returns the list of projects.
@@ -196,5 +196,9 @@ defmodule Todex.Todos do
   """
   def change_task(%Task{} = task) do
     Task.changeset(task, %{})
+  end
+
+  def list_categories do
+    Repo.all(Category)
   end
 end

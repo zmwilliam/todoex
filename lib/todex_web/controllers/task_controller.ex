@@ -14,7 +14,8 @@ defmodule TodexWeb.TaskController do
 
   def new(conn, _params) do
     changeset = Todos.change_task(%Task{})
-    render(conn, "new.html", changeset: changeset)
+    categories = Todos.list_categories()
+    render(conn, "new.html", changeset: changeset, categories: categories)
   end
 
   def create(conn, %{"task" => task_params}) do
@@ -22,6 +23,8 @@ defmodule TodexWeb.TaskController do
     #changeset put_assoc?
     current_user = conn.assigns.current_user
     task_params = Map.put(task_params, "user_id", current_user.id)
+
+    require IEx; IEx.pry
 
     case Todos.create_task(task_params) do
       {:ok, task} ->
@@ -42,7 +45,8 @@ defmodule TodexWeb.TaskController do
   def edit(conn, %{"id" => id}) do
     task = Todos.get_task!(id)
     changeset = Todos.change_task(task)
-    render(conn, "edit.html", task: task, changeset: changeset)
+    categories = Todos.list_categories()
+    render(conn, "edit.html", task: task, changeset: changeset, categories: categories)
   end
 
   def update(conn, %{"id" => id, "task" => task_params}) do
