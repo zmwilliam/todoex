@@ -13,9 +13,9 @@
   <%= textarea f, :description %>
   <%= error_tag f, :description %>
 
-  <%= label f, :category, for: "categoryField" %>
-  <%= select f, :category, Enum.map(@categories, &{&1.name, &1.id}), id: "categoryField" %>
-  <%= error_tag f, :category %>
+  <%= label f, :category_id, for: "categoryField" %>
+  <%= select f, :category_id, Enum.map(@categories, &{&1.name, &1.id}), id: "categoryField" %>
+  <%= error_tag f, :category_id %>
 
   <div>
     <%= submit "Save" %>

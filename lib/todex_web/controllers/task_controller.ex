@@ -24,8 +24,6 @@ defmodule TodexWeb.TaskController do
     current_user = conn.assigns.current_user
     task_params = Map.put(task_params, "user_id", current_user.id)
 
-    require IEx; IEx.pry
-
     case Todos.create_task(task_params) do
       {:ok, task} ->
         conn

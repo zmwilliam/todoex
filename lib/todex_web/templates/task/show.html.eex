@@ -12,6 +12,11 @@
     <%= @task.description %>
   </li>
 
+  <li>
+    <strong>Category:</strong>
+    <%= @task.category.name %>
+  </li>
+
   <%= if @task.is_concluded do %>
   <li>
     <strong>Conclusion date:</strong>
