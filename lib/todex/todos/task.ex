@@ -9,13 +9,15 @@ defmodule Todex.Todos.Task do
     field :title, :string
     field :category, :id
 
+    belongs_to :user, Todex.Accounts.User
+
     timestamps()
   end
 
   @doc false
   def changeset(task, attrs) do
     task
-    |> cast(attrs, [:title, :description, :conclusion_date, :is_concluded])
+    |> cast(attrs, [:title, :description, :conclusion_date, :is_concluded, :user_id])
     |> validate_required([:title])
   end
 end
