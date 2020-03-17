@@ -9,3 +9,15 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+alias Todex.Todos.Category
+
+Enum.each([
+  "Physical Health",
+  "Mental Health",
+  "Hobby",
+  "Life",
+  "Work"
+], fn name ->
+  Todex.Repo.insert!(%Category{name: name})
+end)
