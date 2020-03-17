@@ -3,6 +3,8 @@
     <%= link "Sign Out", to: Routes.session_path(@conn, :delete), method: :delete %>
     </br>
     <%= link "Projects", to: Routes.project_path(@conn, :index) %>
+    </br>
+    <%= link "Tasks", to: Routes.task_path(@conn, :index) %>
   <% else %>
     <%= link "Sign In", to: Routes.session_path(@conn, :new) %>
     </br>

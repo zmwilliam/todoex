@@ -22,6 +22,8 @@ defmodule TodexWeb.Router do
 
     resources "/projects", ProjectController
 
+    resources "/tasks", TaskController
+
     get "/sign-in", SessionController, :new
     post "/sign-in", SessionController, :create
     delete "/sign-out", SessionController, :delete
