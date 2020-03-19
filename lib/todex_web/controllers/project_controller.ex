@@ -18,8 +18,8 @@ defmodule TodexWeb.ProjectController do
   end
 
   def create(conn, %{"project" => project_params}) do
-    #TODO Is this the best way to set user_id? What about 
-    #changeset put_assoc?
+    # TODO Is this the best way to set user_id? What about 
+    # changeset put_assoc?
     current_user = conn.assigns.current_user
     project_params = Map.put(project_params, "user_id", current_user.id)
 
@@ -72,7 +72,7 @@ defmodule TodexWeb.ProjectController do
     if user_id = get_session(conn, :current_user_id) do
       current_user = Accounts.get_user!(user_id)
 
-      conn 
+      conn
       |> assign(:current_user, current_user)
     else
       conn

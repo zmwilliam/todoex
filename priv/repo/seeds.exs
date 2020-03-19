@@ -12,12 +12,15 @@
 
 alias Todex.Todos.Category
 
-Enum.each([
-  "Physical Health",
-  "Mental Health",
-  "Hobby",
-  "Life",
-  "Work"
-], fn name ->
-  Todex.Repo.insert!(%Category{name: name})
-end)
+Enum.each(
+  [
+    "Physical Health",
+    "Mental Health",
+    "Hobby",
+    "Life",
+    "Work"
+  ],
+  fn name ->
+    Todex.Repo.insert!(%Category{name: name})
+  end
+)

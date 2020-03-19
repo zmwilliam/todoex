@@ -13,10 +13,12 @@ defmodule TodexWeb.TaskController do
   end
 
   def new(conn, _params) do
-    changeset = %Task{} 
-                |> Todos.preload_projects() 
-                |> Todos.change_task()
-    #changeset = Todos.change_task(%Task{})
+    changeset =
+      %Task{}
+      |> Todos.preload_projects()
+      |> Todos.change_task()
+
+    # changeset = Todos.change_task(%Task{})
     categories = Todos.list_categories()
 
     current_user = conn.assigns.current_user
@@ -26,8 +28,8 @@ defmodule TodexWeb.TaskController do
   end
 
   def create(conn, %{"task" => task_params}) do
-    #TODO Is this the best way to set user_id? What about 
-    #changeset put_assoc?
+    # TODO Is this the best way to set user_id? What about 
+    # changeset put_assoc?
     current_user = conn.assigns.current_user
     task_params = Map.put(task_params, "user_id", current_user.id)
 
@@ -56,7 +58,12 @@ defmodule TodexWeb.TaskController do
     categories = Todos.list_categories()
     projects = logged_user_projects(conn)
 
-    render(conn, "edit.html", task: task, changeset: changeset, categories: categories, projects: projects)
+    render(conn, "edit.html",
+      task: task,
+      changeset: changeset,
+      categories: categories,
+      projects: projects
+    )
   end
 
   def update(conn, %{"id" => id, "task" => task_params}) do
@@ -85,12 +92,12 @@ defmodule TodexWeb.TaskController do
     |> redirect(to: Routes.task_path(conn, :index))
   end
 
-  #FIXME duplicated TodexWeb.ProjectController
+  # FIXME duplicated TodexWeb.ProjectController
   defp check_auth(conn, _args) do
     if user_id = get_session(conn, :current_user_id) do
       current_user = Accounts.get_user!(user_id)
 
-      conn 
+      conn
       |> assign(:current_user, current_user)
     else
       conn

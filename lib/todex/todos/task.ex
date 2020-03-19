@@ -6,7 +6,6 @@ defmodule Todex.Todos.Task do
   alias Todex.Todos.Category
   alias Todex.Todos.Project
 
-
   schema "tasks" do
     field :conclusion_date, :naive_datetime
     field :description, :string

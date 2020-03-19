@@ -102,7 +102,6 @@ defmodule Todex.Accounts do
     User.changeset(user, %{})
   end
 
-
   def get_by_username(username) when is_nil(username), do: nil
   def get_by_username(username), do: Repo.get_by(User, username: username)
 end

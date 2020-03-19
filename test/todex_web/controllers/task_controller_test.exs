@@ -3,8 +3,18 @@ defmodule TodexWeb.TaskControllerTest do
 
   alias Todex.Todos
 
-  @create_attrs %{conclusion_date: ~N[2010-04-17 14:00:00], description: "some description", is_concluded: true, title: "some title"}
-  @update_attrs %{conclusion_date: ~N[2011-05-18 15:01:01], description: "some updated description", is_concluded: false, title: "some updated title"}
+  @create_attrs %{
+    conclusion_date: ~N[2010-04-17 14:00:00],
+    description: "some description",
+    is_concluded: true,
+    title: "some title"
+  }
+  @update_attrs %{
+    conclusion_date: ~N[2011-05-18 15:01:01],
+    description: "some updated description",
+    is_concluded: false,
+    title: "some updated title"
+  }
   @invalid_attrs %{conclusion_date: nil, description: nil, is_concluded: nil, title: nil}
 
   def fixture(:task) do
@@ -75,6 +85,7 @@ defmodule TodexWeb.TaskControllerTest do
     test "deletes chosen task", %{conn: conn, task: task} do
       conn = delete(conn, Routes.task_path(conn, :delete, task))
       assert redirected_to(conn) == Routes.task_path(conn, :index)
+
       assert_error_sent 404, fn ->
         get(conn, Routes.task_path(conn, :show, task))
       end

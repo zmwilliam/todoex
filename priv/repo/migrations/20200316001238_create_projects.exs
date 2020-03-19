@@ -12,6 +12,5 @@ defmodule Todex.Repo.Migrations.CreateProjects do
     end
 
     create unique_index(:projects, [:name, :user_id])
-
   end
 end

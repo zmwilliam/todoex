@@ -2,7 +2,6 @@ defmodule Todex.Todos.Project do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "projects" do
     field :description, :string
     field :name, :string

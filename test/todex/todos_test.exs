@@ -67,8 +67,18 @@ defmodule Todex.TodosTest do
   describe "tasks" do
     alias Todex.Todos.Task
 
-    @valid_attrs %{conclusion_date: ~N[2010-04-17 14:00:00], description: "some description", is_concluded: true, title: "some title"}
-    @update_attrs %{conclusion_date: ~N[2011-05-18 15:01:01], description: "some updated description", is_concluded: false, title: "some updated title"}
+    @valid_attrs %{
+      conclusion_date: ~N[2010-04-17 14:00:00],
+      description: "some description",
+      is_concluded: true,
+      title: "some title"
+    }
+    @update_attrs %{
+      conclusion_date: ~N[2011-05-18 15:01:01],
+      description: "some updated description",
+      is_concluded: false,
+      title: "some updated title"
+    }
     @invalid_attrs %{conclusion_date: nil, description: nil, is_concluded: nil, title: nil}
 
     def task_fixture(attrs \\ %{}) do

@@ -16,6 +16,7 @@ defmodule TodexWeb.SessionController do
         |> put_session(:current_user_id, user.id)
         |> put_flash(:info, "Signed in successfully")
         |> redirect(to: Routes.page_path(conn, :index))
+
       {:error, _} ->
         conn
         |> put_flash(:error, "There was a problem with you username/password")
