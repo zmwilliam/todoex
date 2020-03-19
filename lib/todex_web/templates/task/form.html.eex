@@ -16,6 +16,14 @@
   <%= label f, :category_id, for: "categoryField" %>
   <%= select f, :category_id, Enum.map(@categories, &{&1.name, &1.id}), id: "categoryField" %>
   <%= error_tag f, :category_id %>
+  
+  <%= label f, :projects, for: "projectsField" %>
+  <%= multiple_select f, 
+      :project_ids, 
+      Enum.map(@projects, &{&1.name, &1.id}), 
+      selected: Enum.map(@changeset.data.projects, &(&1.id)),
+      id: "projectsField" %>
+  <%= error_tag f, :project_ids %>
 
   <div>
     <%= submit "Save" %>

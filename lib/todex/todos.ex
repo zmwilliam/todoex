@@ -21,6 +21,16 @@ defmodule Todex.Todos do
     Repo.all(Project)
   end
 
+  def list_projects(user_id) do
+    Repo.all(from p in Project, where: p.user_id == ^user_id)
+  end
+
+  def list_projects_id_in(ids) do
+    Project
+    |> where([p], p.id in ^ids)
+    |> Repo.all
+  end
+
   @doc """
   Gets a single project.
 
@@ -134,7 +144,8 @@ defmodule Todex.Todos do
   def get_task!(id) do
     Task
     |> Repo.get!(id)
-    |> Repo.preload(:category)
+    |> Repo.preload([:category, :projects])
+    |> preload_projects()
   end
 
   @doc """
@@ -204,5 +215,9 @@ defmodule Todex.Todos do
 
   def list_categories do
     Repo.all(Category)
+  end
+
+  def preload_projects(task) do
+    Repo.preload(task, :projects)
   end
 end

@@ -13,9 +13,16 @@ defmodule TodexWeb.TaskController do
   end
 
   def new(conn, _params) do
-    changeset = Todos.change_task(%Task{})
+    changeset = %Task{} 
+                |> Todos.preload_projects() 
+                |> Todos.change_task()
+    #changeset = Todos.change_task(%Task{})
     categories = Todos.list_categories()
-    render(conn, "new.html", changeset: changeset, categories: categories)
+
+    current_user = conn.assigns.current_user
+    projects = Todos.list_projects(current_user.id)
+
+    render(conn, "new.html", changeset: changeset, categories: categories, projects: projects)
   end
 
   def create(conn, %{"task" => task_params}) do
@@ -23,6 +30,9 @@ defmodule TodexWeb.TaskController do
     #changeset put_assoc?
     current_user = conn.assigns.current_user
     task_params = Map.put(task_params, "user_id", current_user.id)
+
+    selected_projects = Todos.list_projects_id_in(task_params["project_ids"])
+    task_params = Map.put(task_params, "projects", selected_projects)
 
     case Todos.create_task(task_params) do
       {:ok, task} ->
@@ -44,11 +54,16 @@ defmodule TodexWeb.TaskController do
     task = Todos.get_task!(id)
     changeset = Todos.change_task(task)
     categories = Todos.list_categories()
-    render(conn, "edit.html", task: task, changeset: changeset, categories: categories)
+    projects = logged_user_projects(conn)
+
+    render(conn, "edit.html", task: task, changeset: changeset, categories: categories, projects: projects)
   end
 
   def update(conn, %{"id" => id, "task" => task_params}) do
     task = Todos.get_task!(id)
+
+    selected_projects = Todos.list_projects_id_in(task_params["project_ids"])
+    task_params = Map.put(task_params, "projects", selected_projects)
 
     case Todos.update_task(task, task_params) do
       {:ok, task} ->
@@ -83,5 +98,10 @@ defmodule TodexWeb.TaskController do
       |> redirect(to: Routes.page_path(conn, :index))
       |> halt()
     end
+  end
+
+  defp logged_user_projects(conn) do
+    current_user = conn.assigns.current_user
+    Todos.list_projects(current_user.id)
   end
 end
