@@ -5,10 +5,11 @@ defmodule TodexWeb.ProjectController do
   alias Todex.Todos.Project
   alias Todex.Accounts
 
-  plug :check_auth when action in [:new, :create, :edit, :update, :delete]
+  plug :check_auth when action in [:index, :new, :create, :edit, :update, :delete]
 
   def index(conn, _params) do
-    projects = Todos.list_projects()
+    current_user_id = conn.assigns.current_user.id
+    projects = Todos.list_projects(current_user_id)
     render(conn, "index.html", projects: projects)
   end
 
@@ -18,8 +19,6 @@ defmodule TodexWeb.ProjectController do
   end
 
   def create(conn, %{"project" => project_params}) do
-    # TODO Is this the best way to set user_id? What about 
-    # changeset put_assoc?
     current_user = conn.assigns.current_user
     project_params = Map.put(project_params, "user_id", current_user.id)
 

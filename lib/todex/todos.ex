@@ -8,19 +8,6 @@ defmodule Todex.Todos do
 
   alias Todex.Todos.{Project, Category}
 
-  @doc """
-  Returns the list of projects.
-
-  ## Examples
-
-      iex> list_projects()
-      [%Project{}, ...]
-
-  """
-  def list_projects do
-    Repo.all(Project)
-  end
-
   def list_projects(user_id) do
     Project
     |> where([p], p.user_id == ^user_id)
@@ -129,9 +116,12 @@ defmodule Todex.Todos do
     search_term = get_in(params, ["query"])
     wildcard_search = "%#{search_term}%"
 
+    user_id = get_in(params, ["user_id"])
+
     Task
     |> where([t], ilike(t.title, ^wildcard_search))
     |> or_where([t], ilike(t.description, ^wildcard_search))
+    |> where([t], t.user_id == ^user_id)
     |> Repo.all()
   end
 

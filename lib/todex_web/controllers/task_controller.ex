@@ -8,6 +8,9 @@ defmodule TodexWeb.TaskController do
   plug :check_auth
 
   def index(conn, params) do
+    current_user_id = conn.assigns.current_user.id
+    params = Map.put(params, "user_id", current_user_id)
+
     tasks = Todos.list_tasks(params)
     render(conn, "index.html", tasks: tasks)
   end
