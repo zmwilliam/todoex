@@ -1,4 +1,10 @@
 <h1>Listing Tasks</h1>
+<%= form_for @conn, Routes.task_path(@conn, :index), [method: :get], fn f -> %>
+  <div class="row">
+    <%= search_input f, :query %>
+    <%= submit "Search" %>
+  </div>
+<% end %>
 
 <table>
   <thead>
@@ -10,7 +16,7 @@
     </tr>
   </thead>
   <tbody>
-<%= for task <- @tasks do %>
+  <%= for task <- @tasks do %>
     <tr>
       <td><%= task.title %></td>
       <td>
@@ -27,7 +33,7 @@
         <span><%= link "Delete", to: Routes.task_path(@conn, :delete, task), method: :delete, data: [confirm: "Are you sure?"] %></span>
       </td>
     </tr>
-<% end %>
+  <% end %>
   </tbody>
 </table>
 

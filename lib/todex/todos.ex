@@ -22,7 +22,9 @@ defmodule Todex.Todos do
   end
 
   def list_projects(user_id) do
-    Repo.all(from p in Project, where: p.user_id == ^user_id)
+    Project
+    |> where([p], p.user_id == ^user_id)
+    |> Repo.all()
   end
 
   def list_projects_id_in(ids) do
@@ -123,8 +125,14 @@ defmodule Todex.Todos do
       [%Task{}, ...]
 
   """
-  def list_tasks do
-    Repo.all(Task)
+  def list_tasks(params) do
+    search_term = get_in(params, ["query"])
+    wildcard_search = "%#{search_term}%"
+
+    Task
+    |> where([t], ilike(t.title, ^wildcard_search))
+    |> or_where([t], ilike(t.description, ^wildcard_search))
+    |> Repo.all()
   end
 
   @doc """

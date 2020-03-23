@@ -7,8 +7,8 @@ defmodule TodexWeb.TaskController do
 
   plug :check_auth
 
-  def index(conn, _params) do
-    tasks = Todos.list_tasks()
+  def index(conn, params) do
+    tasks = Todos.list_tasks(params)
     render(conn, "index.html", tasks: tasks)
   end
 

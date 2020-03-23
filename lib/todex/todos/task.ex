@@ -15,7 +15,10 @@ defmodule Todex.Todos.Task do
     belongs_to :user, User
     belongs_to :category, Category
 
-    many_to_many :projects, Project, join_through: "task_projects"
+    many_to_many :projects,
+                 Project,
+                 join_through: "task_projects",
+                 on_replace: :delete
 
     timestamps()
   end
