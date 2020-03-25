@@ -1,26 +1,12 @@
 defmodule Todex.AccountsTest do
   use Todex.DataCase
+  use Todex.Fixtures, [:user]
 
   alias Todex.Accounts
+  alias Comeonin.Bcrypt
 
   describe "users" do
     alias Todex.Accounts.User
-
-    @valid_attrs %{encrypted_password: "some encrypted_password", username: "some username"}
-    @update_attrs %{
-      encrypted_password: "some updated encrypted_password",
-      username: "some updated username"
-    }
-    @invalid_attrs %{encrypted_password: nil, username: nil}
-
-    def user_fixture(attrs \\ %{}) do
-      {:ok, user} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Accounts.create_user()
-
-      user
-    end
 
     test "list_users/0 returns all users" do
       user = user_fixture()
@@ -33,25 +19,25 @@ defmodule Todex.AccountsTest do
     end
 
     test "create_user/1 with valid data creates a user" do
-      assert {:ok, %User{} = user} = Accounts.create_user(@valid_attrs)
-      assert user.encrypted_password == "some encrypted_password"
+      assert {:ok, %User{} = user} = Accounts.create_user(@valid_user_attrs)
+      assert Bcrypt.checkpw("some encrypted_password", user.encrypted_password) == true
       assert user.username == "some username"
     end
 
     test "create_user/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Accounts.create_user(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_user(@invalid_user_attrs)
     end
 
     test "update_user/2 with valid data updates the user" do
       user = user_fixture()
-      assert {:ok, %User{} = user} = Accounts.update_user(user, @update_attrs)
-      assert user.encrypted_password == "some updated encrypted_password"
+      assert {:ok, %User{} = user} = Accounts.update_user(user, @update_user_attrs)
+      assert Bcrypt.checkpw("some updated encrypted_password", user.encrypted_password) == true
       assert user.username == "some updated username"
     end
 
     test "update_user/2 with invalid data returns error changeset" do
       user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @invalid_user_attrs)
       assert user == Accounts.get_user!(user.id)
     end
 

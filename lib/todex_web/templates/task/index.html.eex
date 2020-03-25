@@ -21,9 +21,9 @@
       <td><%= task.title %></td>
       <td>
       <%= if task.is_concluded do %>
-        <span><%= link "Mark as undone", to: "" %></span>
+        <span><%= link "Mark as undone", to: Routes.task_task_path(@conn, :undone, task), method: :put %></span>
       <% else %>
-        <span><%= link "Mark as done", to: "" %></span>
+        <span><%= link "Mark as done", to: Routes.task_task_path(@conn, :done, task), method: :put %></span>
       <% end %>
       </td>
 

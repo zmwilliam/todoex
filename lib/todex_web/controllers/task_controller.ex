@@ -95,6 +95,18 @@ defmodule TodexWeb.TaskController do
     |> redirect(to: Routes.task_path(conn, :index))
   end
 
+  def done(conn, %{"task_id" => id}) do
+    conn
+    |> put_flash(:info, "not implemented yet")
+    |> redirect(to: Routes.task_path(conn, :index))
+  end
+
+  def undone(conn, %{"task_id" => id}) do
+    conn
+    |> put_flash(:info, "not implemented yet")
+    |> redirect(to: Routes.task_path(conn, :index))
+  end
+
   # FIXME duplicated TodexWeb.ProjectController
   defp check_auth(conn, _args) do
     if user_id = get_session(conn, :current_user_id) do

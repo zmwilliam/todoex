@@ -198,6 +198,15 @@ defmodule Todex.Todos do
     Repo.delete(task)
   end
 
+  def set_task_done(%Task{} = task) do
+    attrs = %{:is_concluded => true, 
+      :conclusion_date => NaiveDateTime.utc_now}
+
+    task
+    |> Task.changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking task changes.
 
