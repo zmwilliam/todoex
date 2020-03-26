@@ -9,9 +9,7 @@ defmodule TodexWeb.TaskController do
 
   def index(conn, params) do
     current_user_id = conn.assigns.current_user.id
-    params = Map.put(params, "user_id", current_user_id)
-
-    tasks = Todos.list_tasks(params)
+    tasks = Todos.list_tasks(current_user_id, params)
     render(conn, "index.html", tasks: tasks)
   end
 

@@ -2,6 +2,7 @@ defmodule Todex.Fixtures do
   @moduledoc """
   use Todex.Fixtures, [:user, :project, :task] 
   """
+  alias Todex.Repo
   alias Todex.Accounts
   alias Todex.Todos
 
@@ -64,6 +65,7 @@ defmodule Todex.Fixtures do
           |> Enum.into(@valid_task_attrs)
           |> Todos.create_task()
 
+          Repo.preload(task, [:projects])
         task
       end
     end

@@ -27,7 +27,16 @@ defmodule Todex.Todos.Task do
   def changeset(task, attrs) do
     task
     |> cast(attrs, [:title, :description, :conclusion_date, :is_concluded, :category_id, :user_id])
-    |> put_assoc(:projects, attrs["projects"])
+    |> maybe_put_projects(attrs)
     |> validate_required([:title])
   end
+
+  defp maybe_put_projects(changeset, %{projects: projects}), do: put_projects(changeset, projects)
+
+  defp maybe_put_projects(changeset, %{"projects": projects}), do: put_projects(changeset, projects)
+
+  defp maybe_put_projects(changeset, _), do: changeset
+
+  defp put_projects(changeset, projects), do: Ecto.Changeset.put_assoc(changeset, :projects, projects)
+
 end

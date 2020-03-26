@@ -8,13 +8,13 @@ defmodule Todex.TodosTest do
     alias Todex.Todos.Project
 
     test "list_projects/1 returns all projects that belongs to an user" do
-      user = user_fixture()
-      user2 = user_fixture()
-      project = project_fixture(%{ name: "belongs user 1", user_id: user.id })
-      project2 = project_fixture(%{ name: "belongs user 1 too", user_id: user.id })
-      project2 = project_fixture(%{ name: "belongs user 2", user_id: user2.id })
+      user = user_fixture(username: "user 1")
+      project = project_fixture(%{name: "belongs user 1", user_id: user.id})
 
-      assert Todos.list_projects(user.id) == [project, project2]
+      user2 = user_fixture(username: "user 2")
+      project_fixture(%{name: "belongs user 2", user_id: user2.id})
+
+      assert Todos.list_projects(user.id) == [project]
     end
 
     test "get_project!/1 returns the project with given id" do
@@ -24,7 +24,9 @@ defmodule Todex.TodosTest do
     end
 
     test "create_project/1 with valid data creates a project" do
-      assert {:ok, %Project{} = project} = Todos.create_project(@valid_project_attrs)
+      user = user_fixture()
+      attrs = Map.put(@valid_project_attrs, :user_id, user.id)
+      assert {:ok, %Project{} = project} = Todos.create_project(attrs)
       assert project.description == "some description"
       assert project.name == "some name"
     end
@@ -34,26 +36,30 @@ defmodule Todex.TodosTest do
     end
 
     test "update_project/2 with valid data updates the project" do
-      project = project_fixture()
+      user = user_fixture()
+      project = project_fixture(user_id: user.id)
       assert {:ok, %Project{} = project} = Todos.update_project(project, @update_project_attrs)
       assert project.description == "some updated description"
       assert project.name == "some updated name"
     end
 
     test "update_project/2 with invalid data returns error changeset" do
-      project = project_fixture()
+      user = user_fixture()
+      project = project_fixture(user_id: user.id)
       assert {:error, %Ecto.Changeset{}} = Todos.update_project(project, @invalid_project_attrs)
       assert project == Todos.get_project!(project.id)
     end
 
     test "delete_project/1 deletes the project" do
-      project = project_fixture()
+      user = user_fixture()
+      project = project_fixture(user_id: user.id)
       assert {:ok, %Project{}} = Todos.delete_project(project)
       assert_raise Ecto.NoResultsError, fn -> Todos.get_project!(project.id) end
     end
 
     test "change_project/1 returns a project changeset" do
-      project = project_fixture()
+      user = user_fixture()
+      project = project_fixture(user_id: user.id)
       assert %Ecto.Changeset{} = Todos.change_project(project)
     end
   end
@@ -61,9 +67,10 @@ defmodule Todex.TodosTest do
   describe "tasks" do
     alias Todex.Todos.Task
 
-    test "list_tasks/0 returns all tasks" do
-      task = task_fixture()
-      assert Todos.list_tasks() == [task]
+    test "list_tasks/2 returns all tasks that belongs to an user" do
+      user = user_fixture()
+      task = task_fixture(user_id: user.id)
+      assert Todos.list_tasks(user.id) == [task]
     end
 
     test "get_task!/1 returns the task with given id" do

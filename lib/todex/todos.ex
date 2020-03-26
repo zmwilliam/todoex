@@ -112,11 +112,9 @@ defmodule Todex.Todos do
       [%Task{}, ...]
 
   """
-  def list_tasks(params) do
+  def list_tasks(user_id, params \\ %{}) do
     search_term = get_in(params, ["query"])
     wildcard_search = "%#{search_term}%"
-
-    user_id = get_in(params, ["user_id"])
 
     Task
     |> where([t], ilike(t.title, ^wildcard_search))
