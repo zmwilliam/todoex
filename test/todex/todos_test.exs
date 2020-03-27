@@ -70,16 +70,20 @@ defmodule Todex.TodosTest do
     test "list_tasks/2 returns all tasks that belongs to an user" do
       user = user_fixture()
       task = task_fixture(user_id: user.id)
+
       assert Todos.list_tasks(user.id) == [task]
     end
 
     test "get_task!/1 returns the task with given id" do
-      task = task_fixture()
+      user = user_fixture()
+      task = task_fixture_preloaded(user_id: user.id)
       assert Todos.get_task!(task.id) == task
     end
 
     test "create_task/1 with valid data creates a task" do
-      assert {:ok, %Task{} = task} = Todos.create_task(@valid_task_attrs)
+      user = user_fixture()
+      attrs = Map.put(@valid_task_attrs, :user_id, user.id)
+      assert {:ok, %Task{} = task} = Todos.create_task(attrs)
       assert task.conclusion_date == ~N[2010-04-17 14:00:00]
       assert task.description == "some description"
       assert task.is_concluded == true
@@ -91,8 +95,9 @@ defmodule Todex.TodosTest do
     end
 
     test "update_task/2 with valid data updates the task" do
-      task = task_fixture()
-      assert {:ok, %Task{} = task} = Todos.update_task(task, @update_project_attrs)
+      user = user_fixture()
+      task = task_fixture(user_id: user.id)
+      assert {:ok, %Task{} = task} = Todos.update_task(task, @update_task_attrs)
       assert task.conclusion_date == ~N[2011-05-18 15:01:01]
       assert task.description == "some updated description"
       assert task.is_concluded == false
@@ -100,19 +105,22 @@ defmodule Todex.TodosTest do
     end
 
     test "update_task/2 with invalid data returns error changeset" do
-      task = task_fixture()
+      user = user_fixture()
+      task = task_fixture_preloaded(user_id: user.id)
       assert {:error, %Ecto.Changeset{}} = Todos.update_task(task, @invalid_task_attrs)
       assert task == Todos.get_task!(task.id)
     end
 
     test "delete_task/1 deletes the task" do
-      task = task_fixture()
+      user = user_fixture()
+      task = task_fixture(user_id: user.id)
       assert {:ok, %Task{}} = Todos.delete_task(task)
       assert_raise Ecto.NoResultsError, fn -> Todos.get_task!(task.id) end
     end
 
     test "change_task/1 returns a task changeset" do
-      task = task_fixture()
+      user = user_fixture()
+      task = task_fixture(user_id: user.id)
       assert %Ecto.Changeset{} = Todos.change_task(task)
     end
   end

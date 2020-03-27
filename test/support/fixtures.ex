@@ -64,9 +64,12 @@ defmodule Todex.Fixtures do
           attrs
           |> Enum.into(@valid_task_attrs)
           |> Todos.create_task()
-
-          Repo.preload(task, [:projects])
         task
+      end
+
+      def task_fixture_preloaded(attrs \\ %{}) do
+        task_fixture(attrs)
+        |>Repo.preload([:projects, :category])
       end
     end
   end

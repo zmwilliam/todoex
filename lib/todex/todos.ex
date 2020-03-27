@@ -141,7 +141,6 @@ defmodule Todex.Todos do
     Task
     |> Repo.get!(id)
     |> Repo.preload([:category, :projects])
-    |> preload_projects()
   end
 
   @doc """
@@ -220,9 +219,5 @@ defmodule Todex.Todos do
 
   def list_categories do
     Repo.all(Category)
-  end
-
-  def preload_projects(task) do
-    Repo.preload(task, :projects)
   end
 end
