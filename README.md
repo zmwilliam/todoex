@@ -1,5 +1,7 @@
 # Todex
 
+[![CircleCI](https://circleci.com/gh/CircleCI-Public/circleci-demo-elixir-phoenix.svg?style=svg)](https://circleci.com/gh/zmwilliam/todoex)
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
