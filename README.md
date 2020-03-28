@@ -1,6 +1,6 @@
 # Todex
 
-[![CircleCI](https://circleci.com/gh/CircleCI-Public/circleci-demo-elixir-phoenix.svg?style=svg)](https://circleci.com/gh/zmwilliam/todoex)
+[![CircleCI](https://circleci.com/gh/zmwilliam/todoex/tree/master.svg?style=svg)](https://circleci.com/gh/zmwilliam/todoex/tree/master)
 
 To start your Phoenix server:
 
