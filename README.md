@@ -1,6 +1,7 @@
 # Todex
 
 [![CircleCI](https://circleci.com/gh/zmwilliam/todoex/tree/master.svg?style=svg)](https://circleci.com/gh/zmwilliam/todoex/tree/master)
+[![codecov](https://codecov.io/gh/zmwilliam/todoex/branch/master/graph/badge.svg)](https://codecov.io/gh/zmwilliam/todoex)
 
 To start your Phoenix server:
 
