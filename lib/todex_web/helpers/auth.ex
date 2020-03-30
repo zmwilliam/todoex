@@ -1,6 +1,12 @@
 defmodule TodexWeb.Helpers.Auth do
+  alias Plug.Conn
+
   def signed_in?(conn) do
-    user_id = Plug.Conn.get_session(conn, :current_user_id)
-    if user_id, do: !!Todex.Repo.get(Todex.Accounts.User, user_id)
+    logged_user = Conn.get_session(conn, :current_user)
+    logged_user != nil
+  end
+
+  def current_user(conn) do
+    Conn.get_session(conn, :current_user)
   end
 end

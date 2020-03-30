@@ -3,13 +3,14 @@ defmodule TodexWeb.ProjectController do
 
   alias Todex.Todos
   alias Todex.Todos.Project
-  alias Todex.Accounts
+  alias TodexWeb.Helpers.Auth
 
-  plug :check_auth when action in [:index, :new, :create, :edit, :update, :delete]
+  plug :check_auth
+       when action in [:index, :new, :create, :edit, :update, :delete]
 
   def index(conn, _params) do
-    current_user_id = conn.assigns.current_user.id
-    projects = Todos.list_projects(current_user_id)
+    current_user = Auth.current_user(conn)
+    projects = Todos.list_projects(current_user.id)
     render(conn, "index.html", projects: projects)
   end
 
@@ -19,7 +20,7 @@ defmodule TodexWeb.ProjectController do
   end
 
   def create(conn, %{"project" => project_params}) do
-    current_user = conn.assigns.current_user
+    current_user = Auth.current_user(conn)
     project_params = Map.put(project_params, "user_id", current_user.id)
 
     case Todos.create_project(project_params) do
@@ -68,16 +69,13 @@ defmodule TodexWeb.ProjectController do
   end
 
   defp check_auth(conn, _args) do
-    if user_id = get_session(conn, :current_user_id) do
-      current_user = Accounts.get_user!(user_id)
-
-      conn
-      |> assign(:current_user, current_user)
-    else
+    unless Auth.signed_in?(conn) do
       conn
       |> put_flash(:error, "You need to be signed")
       |> redirect(to: Routes.page_path(conn, :index))
       |> halt()
+    else
+      conn
     end
   end
 end

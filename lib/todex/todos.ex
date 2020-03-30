@@ -140,7 +140,8 @@ defmodule Todex.Todos do
   def get_task!(id) do
     Task
     |> Repo.get!(id)
-    |> Repo.preload([:category, :projects])
+    |> preload_projects()
+    |> Repo.preload(:category)
   end
 
   @doc """
@@ -196,8 +197,7 @@ defmodule Todex.Todos do
   end
 
   def set_task_done(%Task{} = task) do
-    attrs = %{:is_concluded => true, 
-      :conclusion_date => NaiveDateTime.utc_now}
+    attrs = %{:is_concluded => true, :conclusion_date => NaiveDateTime.utc_now()}
 
     task
     |> Task.changeset(attrs)
@@ -219,5 +219,9 @@ defmodule Todex.Todos do
 
   def list_categories do
     Repo.all(Category)
+  end
+
+  def preload_projects(task) do
+    Repo.preload(task, :projects)
   end
 end

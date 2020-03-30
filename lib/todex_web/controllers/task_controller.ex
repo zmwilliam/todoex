@@ -3,7 +3,6 @@ defmodule TodexWeb.TaskController do
 
   alias Todex.Todos
   alias Todex.Todos.Task
-  alias Todex.Accounts
 
   plug :check_auth
 
@@ -93,35 +92,32 @@ defmodule TodexWeb.TaskController do
     |> redirect(to: Routes.task_path(conn, :index))
   end
 
-  def done(conn, %{"task_id" => id}) do
+  def done(conn, %{"task_id" => _id}) do
     conn
     |> put_flash(:info, "not implemented yet")
     |> redirect(to: Routes.task_path(conn, :index))
   end
 
-  def undone(conn, %{"task_id" => id}) do
+  def undone(conn, %{"task_id" => _id}) do
     conn
     |> put_flash(:info, "not implemented yet")
     |> redirect(to: Routes.task_path(conn, :index))
   end
 
-  # FIXME duplicated TodexWeb.ProjectController
+  defp logged_user_projects(conn) do
+    current_user = conn.assigns.current_user
+    Todos.list_projects(current_user.id)
+  end
+
   defp check_auth(conn, _args) do
-    if user_id = get_session(conn, :current_user_id) do
-      current_user = Accounts.get_user!(user_id)
-
+    if session_user = get_session(conn, :current_user) do
       conn
-      |> assign(:current_user, current_user)
+      |> assign(:current_user, session_user)
     else
       conn
       |> put_flash(:error, "You need to be signed")
       |> redirect(to: Routes.page_path(conn, :index))
       |> halt()
     end
-  end
-
-  defp logged_user_projects(conn) do
-    current_user = conn.assigns.current_user
-    Todos.list_projects(current_user.id)
   end
 end

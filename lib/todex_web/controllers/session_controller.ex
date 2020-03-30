@@ -13,7 +13,7 @@ defmodule TodexWeb.SessionController do
     case Comeonin.Bcrypt.check_pass(user, auth_params["password"]) do
       {:ok, user} ->
         conn
-        |> put_session(:current_user_id, user.id)
+        |> put_session(:current_user, user)
         |> put_flash(:info, "Signed in successfully")
         |> redirect(to: Routes.page_path(conn, :index))
 
@@ -26,7 +26,7 @@ defmodule TodexWeb.SessionController do
 
   def delete(conn, _params) do
     conn
-    |> delete_session(:current_user_id)
+    |> delete_session(:current_user)
     |> put_flash(:info, "Signed out successfully")
     |> redirect(to: Routes.page_path(conn, :index))
   end

@@ -1,18 +1,15 @@
 defmodule TodexWeb.ProjectControllerTest do
   use TodexWeb.ConnCase
-
-  alias Todex.Todos
+  use Todex.Fixtures, [:user, :project, :task]
+  use Plug.Test
 
   @create_attrs %{description: "some description", name: "some name"}
   @update_attrs %{description: "some updated description", name: "some updated name"}
   @invalid_attrs %{description: nil, name: nil}
 
-  def fixture(:project) do
-    {:ok, project} = Todos.create_project(@create_attrs)
-    project
-  end
-
   describe "index" do
+    setup [:auth_user]
+
     test "lists all projects", %{conn: conn} do
       conn = get(conn, Routes.project_path(conn, :index))
       assert html_response(conn, 200) =~ "Listing Projects"
@@ -20,6 +17,8 @@ defmodule TodexWeb.ProjectControllerTest do
   end
 
   describe "new project" do
+    setup [:auth_user]
+
     test "renders form", %{conn: conn} do
       conn = get(conn, Routes.project_path(conn, :new))
       assert html_response(conn, 200) =~ "New Project"
@@ -27,6 +26,8 @@ defmodule TodexWeb.ProjectControllerTest do
   end
 
   describe "create project" do
+    setup [:auth_user]
+
     test "redirects to show when data is valid", %{conn: conn} do
       conn = post(conn, Routes.project_path(conn, :create), project: @create_attrs)
 
@@ -82,8 +83,17 @@ defmodule TodexWeb.ProjectControllerTest do
     end
   end
 
+  defp auth_user(_) do
+    user = user_fixture()
+    conn = Phoenix.ConnTest.build_conn() |> init_test_session(%{current_user: user})
+    {:ok, conn: conn}
+  end
+
   defp create_project(_) do
-    project = fixture(:project)
-    {:ok, project: project}
+    user = user_fixture()
+    conn = Phoenix.ConnTest.build_conn() |> init_test_session(%{current_user: user})
+    project = project_fixture(user_id: user.id)
+
+    {:ok, conn: conn, project: project}
   end
 end
