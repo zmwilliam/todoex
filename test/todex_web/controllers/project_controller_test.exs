@@ -1,6 +1,6 @@
 defmodule TodexWeb.ProjectControllerTest do
   use TodexWeb.ConnCase
-  use Todex.Fixtures, [:user, :project, :task]
+  use Todex.Fixtures, [:user, :project]
   use Plug.Test
 
   @create_attrs %{description: "some description", name: "some name"}

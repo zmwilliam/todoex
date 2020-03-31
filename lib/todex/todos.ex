@@ -14,7 +14,7 @@ defmodule Todex.Todos do
     |> Repo.all()
   end
 
-  def list_projects_id_in(ids) do
+  def list_projects_id_in(ids \\ []) do
     Project
     |> where([p], p.id in ^ids)
     |> Repo.all()

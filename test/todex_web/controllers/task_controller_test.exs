@@ -1,7 +1,7 @@
 defmodule TodexWeb.TaskControllerTest do
   use TodexWeb.ConnCase
-
-  alias Todex.Todos
+  use Todex.Fixtures, [:user, :project, :task]
+  use Plug.Test
 
   @create_attrs %{
     conclusion_date: ~N[2010-04-17 14:00:00],
@@ -17,12 +17,9 @@ defmodule TodexWeb.TaskControllerTest do
   }
   @invalid_attrs %{conclusion_date: nil, description: nil, is_concluded: nil, title: nil}
 
-  def fixture(:task) do
-    {:ok, task} = Todos.create_task(@create_attrs)
-    task
-  end
-
   describe "index" do
+    setup [:auth_user]
+
     test "lists all tasks", %{conn: conn} do
       conn = get(conn, Routes.task_path(conn, :index))
       assert html_response(conn, 200) =~ "Listing Tasks"
@@ -30,6 +27,8 @@ defmodule TodexWeb.TaskControllerTest do
   end
 
   describe "new task" do
+    setup [:auth_user]
+
     test "renders form", %{conn: conn} do
       conn = get(conn, Routes.task_path(conn, :new))
       assert html_response(conn, 200) =~ "New Task"
@@ -37,6 +36,8 @@ defmodule TodexWeb.TaskControllerTest do
   end
 
   describe "create task" do
+    setup [:auth_user]
+
     test "redirects to show when data is valid", %{conn: conn} do
       conn = post(conn, Routes.task_path(conn, :create), task: @create_attrs)
 
@@ -92,8 +93,16 @@ defmodule TodexWeb.TaskControllerTest do
     end
   end
 
+  defp auth_user(_) do
+    user = user_fixture()
+    conn = Phoenix.ConnTest.build_conn() |> init_test_session(%{current_user: user})
+    {:ok, conn: conn}
+  end
+
   defp create_task(_) do
-    task = fixture(:task)
-    {:ok, task: task}
+    user = user_fixture()
+    conn = Phoenix.ConnTest.build_conn() |> init_test_session(%{current_user: user})
+    task = task_fixture(user_id: user.id)
+    {:ok, conn: conn, task: task}
   end
 end

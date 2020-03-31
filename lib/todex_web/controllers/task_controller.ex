@@ -3,12 +3,13 @@ defmodule TodexWeb.TaskController do
 
   alias Todex.Todos
   alias Todex.Todos.Task
+  alias TodexWeb.Helpers.Auth
 
   plug :check_auth
 
   def index(conn, params) do
-    current_user_id = conn.assigns.current_user.id
-    tasks = Todos.list_tasks(current_user_id, params)
+    current_user = Auth.current_user(conn)
+    tasks = Todos.list_tasks(current_user.id, params)
     render(conn, "index.html", tasks: tasks)
   end
 
@@ -18,22 +19,23 @@ defmodule TodexWeb.TaskController do
       |> Todos.preload_projects()
       |> Todos.change_task()
 
-    # changeset = Todos.change_task(%Task{})
     categories = Todos.list_categories()
 
-    current_user = conn.assigns.current_user
+    current_user = Auth.current_user(conn)
     projects = Todos.list_projects(current_user.id)
 
     render(conn, "new.html", changeset: changeset, categories: categories, projects: projects)
   end
 
   def create(conn, %{"task" => task_params}) do
-    # TODO Is this the best way to set user_id? What about 
-    # changeset put_assoc?
-    current_user = conn.assigns.current_user
+    current_user = Auth.current_user(conn)
     task_params = Map.put(task_params, "user_id", current_user.id)
 
-    selected_projects = Todos.list_projects_id_in(task_params["project_ids"])
+    selected_projects =
+      task_params
+      |> Map.get("project_ids", [])
+      |> Todos.list_projects_id_in()
+
     task_params = Map.put(task_params, "projects", selected_projects)
 
     case Todos.create_task(task_params) do
@@ -43,7 +45,15 @@ defmodule TodexWeb.TaskController do
         |> redirect(to: Routes.task_path(conn, :show, task))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        categories = Todos.list_categories()
+        projects = Todos.list_projects(current_user.id)
+        data = Todos.preload_projects(changeset.data)
+
+        render(conn, "new.html",
+          changeset: %{changeset | data: data},
+          categories: categories,
+          projects: projects
+        )
     end
   end
 
@@ -56,7 +66,7 @@ defmodule TodexWeb.TaskController do
     task = Todos.get_task!(id)
     changeset = Todos.change_task(task)
     categories = Todos.list_categories()
-    projects = logged_user_projects(conn)
+    projects = current_user_projects(conn)
 
     render(conn, "edit.html",
       task: task,
@@ -69,7 +79,11 @@ defmodule TodexWeb.TaskController do
   def update(conn, %{"id" => id, "task" => task_params}) do
     task = Todos.get_task!(id)
 
-    selected_projects = Todos.list_projects_id_in(task_params["project_ids"])
+    selected_projects =
+      task_params
+      |> Map.get("project_ids", [])
+      |> Todos.list_projects_id_in()
+
     task_params = Map.put(task_params, "projects", selected_projects)
 
     case Todos.update_task(task, task_params) do
@@ -79,7 +93,15 @@ defmodule TodexWeb.TaskController do
         |> redirect(to: Routes.task_path(conn, :show, task))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", task: task, changeset: changeset)
+        categories = Todos.list_categories()
+        projects = current_user_projects(conn)
+
+        render(conn, "edit.html",
+          task: task,
+          changeset: changeset,
+          categories: categories,
+          projects: projects
+        )
     end
   end
 
@@ -104,20 +126,19 @@ defmodule TodexWeb.TaskController do
     |> redirect(to: Routes.task_path(conn, :index))
   end
 
-  defp logged_user_projects(conn) do
-    current_user = conn.assigns.current_user
+  defp current_user_projects(conn) do
+    current_user = Auth.current_user(conn)
     Todos.list_projects(current_user.id)
   end
 
   defp check_auth(conn, _args) do
-    if session_user = get_session(conn, :current_user) do
-      conn
-      |> assign(:current_user, session_user)
-    else
+    unless Auth.signed_in?(conn) do
       conn
       |> put_flash(:error, "You need to be signed")
       |> redirect(to: Routes.page_path(conn, :index))
       |> halt()
+    else
+      conn
     end
   end
 end
