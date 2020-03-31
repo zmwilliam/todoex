@@ -18,7 +18,7 @@ defmodule TodexWeb.UserController do
     case Accounts.create_user(user_params) do
       {:ok, user} ->
         conn
-        |> put_session(:current_user_id, user.id)
+        |> put_session(:current_user, user)
         |> put_flash(:info, "User created successfully.")
         |> redirect(to: Routes.page_path(conn, :index))
 
