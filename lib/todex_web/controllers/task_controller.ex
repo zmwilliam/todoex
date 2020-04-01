@@ -114,16 +114,32 @@ defmodule TodexWeb.TaskController do
     |> redirect(to: Routes.task_path(conn, :index))
   end
 
-  def done(conn, %{"task_id" => _id}) do
-    conn
-    |> put_flash(:info, "not implemented yet")
-    |> redirect(to: Routes.task_path(conn, :index))
+  def done(conn, %{"task_id" => id}) do
+    case Todos.mark_task_done(id) do
+      {:ok, task} ->
+        conn
+        |> put_flash(:info, "Task marked as done")
+        |> redirect(to: Routes.task_path(conn, :index))
+
+      {:error, _} ->
+        conn
+        |> put_flash(:error, "Failed to mark task as done")
+        |> redirect(to: Routes.task_path(conn, :index))
+    end
   end
 
-  def undone(conn, %{"task_id" => _id}) do
-    conn
-    |> put_flash(:info, "not implemented yet")
-    |> redirect(to: Routes.task_path(conn, :index))
+  def undone(conn, %{"task_id" => id}) do
+    case Todos.mark_task_undone(id) do
+      {:ok, task} ->
+        conn
+        |> put_flash(:info, "Task marked as undone")
+        |> redirect(to: Routes.task_path(conn, :index))
+
+      {:error, _} ->
+        conn
+        |> put_flash(:error, "Failed to mark task as undone")
+        |> redirect(to: Routes.task_path(conn, :index))
+    end
   end
 
   defp current_user_projects(conn) do

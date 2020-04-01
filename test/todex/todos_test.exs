@@ -123,5 +123,21 @@ defmodule Todex.TodosTest do
       task = task_fixture(user_id: user.id)
       assert %Ecto.Changeset{} = Todos.change_task(task)
     end
+
+    test "mark_task_done/1 updates task" do
+      user = user_fixture()
+      task = task_fixture(user_id: user.id)
+      assert {:ok, %Task{} = task} = Todos.mark_task_done(task.id)
+      assert task.is_concluded == true
+      assert task.conclusion_date == ~N[2011-05-18 15:01:01]
+    end
+
+    test "mark_task_undone/1 updates task" do
+      user = user_fixture()
+      task = task_fixture(user_id: user.id)
+      assert {:ok, %Task{} = task} = Todos.mark_task_undone(task.id)
+      assert task.is_concluded == false
+      assert task.conclusion_date == nil
+    end
   end
 end

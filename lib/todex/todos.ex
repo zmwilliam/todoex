@@ -196,14 +196,6 @@ defmodule Todex.Todos do
     Repo.delete(task)
   end
 
-  def set_task_done(%Task{} = task) do
-    attrs = %{:is_concluded => true, :conclusion_date => NaiveDateTime.utc_now()}
-
-    task
-    |> Task.changeset(attrs)
-    |> Repo.update()
-  end
-
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking task changes.
 
@@ -223,5 +215,16 @@ defmodule Todex.Todos do
 
   def preload_projects(task) do
     Repo.preload(task, :projects)
+  end
+
+  def mark_task_done(id) do
+    # FIXME mock datetime
+    attrs = %{:is_concluded => true, :conclusion_date => NaiveDateTime.utc_now()}
+    get_task!(id) |> update_task(attrs)
+  end
+
+  def mark_task_undone(id) do
+    attrs = %{:is_concluded => false, :conclusion_date => nil}
+    get_task!(id) |> update_task(attrs)
   end
 end
